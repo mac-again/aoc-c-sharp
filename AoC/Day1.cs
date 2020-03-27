@@ -2,24 +2,22 @@ using System;
 using System.IO;
 using System.Linq;
 
+using AoC;
+
 namespace AoC.Day1
 {
-    internal class Day1
+    internal class Day1 : DayBase
     {
+        private const string InputFile = "AoC/input/day1.txt";
         internal Day1() { }
-        internal void Main()
+        internal override void MainA()
         {
-            Main1();
-            Main2();
-        }
-        internal void Main1()
-        {
-            var massNeeded = File.ReadLines("input/day1.txt").Select(m => (Int32.Parse(m) / 3) - 2).Sum();
+            var massNeeded = File.ReadLines(InputFile).Select(m => (Int32.Parse(m) / 3) - 2).Sum();
             Console.WriteLine("Mass {0}", massNeeded);
         }
-        internal void Main2()
+        internal override void MainB()
         {
-            var massNeeded = File.ReadLines("input/day1.txt")
+            var massNeeded = File.ReadLines(InputFile)
                 .Select(m => ComplexRequiredFuel(Int32.Parse(m)))
                 .Sum();
             Console.WriteLine("Mass {0}", massNeeded);

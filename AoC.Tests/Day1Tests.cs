@@ -1,9 +1,6 @@
-using System;
 using Xunit;
 
-using AoC.Day1;
-
-namespace AoC.Tests.Day1
+namespace AoC.Tests
 {
     public class Day1Tests
     {
@@ -20,8 +17,7 @@ namespace AoC.Tests.Day1
         [MemberData(nameof(TestBasicFuelData))]
         internal void TestBasicFuel(int input, int expected)
         {
-            Assert.Equal(expected, AoC.Day1.Day1.BasicRequiredFuel(input));
-
+            Assert.Equal(expected, Day1.Day1.BasicRequiredFuel(input));
         }
 
         public static TheoryData<int, int> TestComplexFuelData =>
@@ -36,8 +32,7 @@ namespace AoC.Tests.Day1
         [MemberData(nameof(TestComplexFuelData))]
         internal void TestComplexFuel(int input, int expected)
         {
-            Assert.Equal(expected, AoC.Day1.Day1.ComplexRequiredFuel(input));
-
+            Assert.Equal(expected, Day1.Day1.ComplexRequiredFuel(input));
         }
     }
 }
