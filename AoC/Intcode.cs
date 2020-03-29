@@ -6,12 +6,20 @@ namespace AoC
 {
     internal class Intcode
     {
+        // Re-factor so no longer static which should allow the params bits to
+        // be simplified and some replication reduced. Also, add tests for day 2
+        // and 5 so you can refactor without breaking.
+
         internal static void IntcodeMachine(
             List<int> intcode,
             List<int> input,
             List<int> output)
         {
             var index = 0;
+
+            // Probably only ever use with ++, ooh could this be a property so
+            // it gets auto incremented when used? Can probably do the same for
+            // index but implement on get and not set
             var inputIndex = 0;
 
             while (true)
@@ -37,8 +45,7 @@ namespace AoC
                         break;
 
                     case 3:
-                        intcode[intcode[index + 1]] = input[inputIndex];
-                        inputIndex++;
+                        intcode[intcode[index + 1]] = input[inputIndex++];
                         index += 2;
                         break;
                     case 4:

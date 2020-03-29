@@ -32,6 +32,9 @@ namespace AoC
                 case 5:
                     dayClass = new Day5.Day5();
                     break;
+                case 6:
+                    dayClass = new Day6.Day6();
+                    break;
                 default:
                     return;
             }
