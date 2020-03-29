@@ -49,11 +49,12 @@ namespace AoC.Day2
                 }
             }
         }
-
+        // Ref probably not needed
         internal static void IntcodeMachine(ref List<int> intcode)
         {
             var index = 0;
 
+            // How does this work, surely it loops forever...
             while (true)
             {
                 switch (intcode[index])
@@ -69,10 +70,10 @@ namespace AoC.Day2
                     case 99:
                         // Console.WriteLine("Opcode 99 => Finished!");
                         index += 1;
-                        break;
+                        return;
                     default:
                         Console.WriteLine("UNRECOGNISED OPCODE {0}, STOPPING", intcode[index]);
-                        break;
+                        return;
                 }
             }
         }
