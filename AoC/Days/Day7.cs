@@ -18,7 +18,7 @@ namespace AoC.Day7
         }
         internal override void MainA()
         {
-            var answer = GetPerms(new List<int> { 0, 1, 2, 3, 4 })
+            var answer = GetPerms(Enumerable.Range(0, 5))
                 .Select(ps => Enumerable
                     .Range(0, 5)
                     .Aggregate(0, (output, num) => Amplify(ps[num], output)))
@@ -26,11 +26,14 @@ namespace AoC.Day7
             Console.WriteLine(answer);
         }
 
-        internal static List<List<int>> GetPerms(List<int> input)
+        internal static IEnumerable<List<int>> GetPerms(IEnumerable<int> input)
         {
+            // Eliminate a number, work out all perms of the smaller list and
+            // add the number back at the end. Input actually needs to be an
+            // enumerable that is not used up I think
             return !input.Any() ? new List<List<int>> { new List<int> { } } : input
-                .SelectMany(x => GetPerms(input.Where(y => y != x).ToList())
-                    .Select(y => y.Append(x).ToList())).ToList();
+                .SelectMany(x => GetPerms(input.Where(y => y != x))
+                    .Select(y => y.Append(x).ToList()));
         }
 
         internal int Amplify(int phase, int inputNum)
