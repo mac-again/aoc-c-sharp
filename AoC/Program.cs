@@ -1,7 +1,9 @@
-﻿using System;
+﻿using System.Security.Cryptography;
+using System;
 using System.Runtime.CompilerServices;
 using System.Linq;
-
+using Serilog;
+using CommandLine;
 
 [assembly: InternalsVisibleTo("AoC.Tests")]
 namespace AoC
@@ -10,9 +12,20 @@ namespace AoC
     {
         static void Main(string[] args)
         {
-            var day = args.Any() ? Int32.Parse(args[0]) : 0;
+            new Parser(config => { config.HelpWriter = Console.Out; })
+                .ParseArguments<CommandLineOptions>(args)
+                .WithParsed<CommandLineOptions>(config => App(config));
+        }
 
-            Console.WriteLine("Day{0}:", day);
+        static void App(CommandLineOptions config)
+        {
+            SetupLogging(config.DebugLogs);
+
+            var day = config.Day;
+
+            Log.Information("Day: {day}", day);
+
+            if (day == 0) { Scratch(); }
 
             IDay dayClass = null;
             switch (day)
@@ -43,6 +56,23 @@ namespace AoC
             }
 
             dayClass.Main();
+
+        }
+
+        static void SetupLogging(bool debug)
+        {
+            var configuration = new LoggerConfiguration();
+
+            if (debug) { configuration.MinimumLevel.Debug(); }
+
+            Log.Logger = configuration
+                .WriteTo
+                .Console()
+                .CreateLogger();
+        }
+
+        static void Scratch()
+        {
 
         }
     }

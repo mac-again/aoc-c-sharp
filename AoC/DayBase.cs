@@ -1,16 +1,20 @@
+using System.Reflection.Metadata.Ecma335;
+using System;
+using Serilog;
+
 namespace AoC
 {
 
-    abstract class DayBase : IDay
+    internal abstract class DayBase : IDay
     {
-        internal DayBase() { }
-
+        // internal DayBase() { }
         public void Main()
         {
+            Log.Information("Part A:");
             MainA();
+            Log.Information("Part B:");
             MainB();
         }
-
         internal abstract void MainA();
         internal abstract void MainB();
     }

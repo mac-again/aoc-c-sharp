@@ -2,31 +2,24 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using Serilog;
 
 namespace AoC.Day7
 {
-    internal class Day7 : DayBase
+    internal class Day7 : IntcodeDayBase
     {
-        private const string InputFile = "AoC/input/day7.txt";
-        private readonly List<int> BaseIntcode;
-        internal Day7()
-        {
-            BaseIntcode = File.ReadAllText(InputFile)
-                .Split(",")
-                .Select(n => Int32.Parse(n))
-                .ToList();
-        }
+        private readonly List<int> BaseIntcode = ParseIntcodeFile("AoC/input/day7.txt");
+        internal Day7() { }
         internal override void MainA()
         {
             var answer = GetPerms(Enumerable.Range(0, 5))
-                .Select(ps => Enumerable
-                    .Range(0, 5)
-                    .Aggregate(0, (output, num) => Amplify(ps[num], output)))
+                .Select(phases => Enumerable.Range(0, 5)
+                    .Aggregate(0, (output, num) => Amplify(phases[num], output)))
                 .Max();
-            Console.WriteLine(answer);
+            Log.Information("Answer: {answer}", answer);
         }
 
-        internal static IEnumerable<List<int>> GetPerms(IEnumerable<int> input)
+        private static IEnumerable<List<int>> GetPerms(IEnumerable<int> input)
         {
             // Eliminate a number, work out all perms of the smaller list and
             // add the number back at the end. Input actually needs to be an
@@ -36,18 +29,40 @@ namespace AoC.Day7
                     .Select(y => y.Append(x).ToList()));
         }
 
-        internal int Amplify(int phase, int inputNum)
+        private int Amplify(int phase, int inputNum)
         {
-            var input = new List<int> { phase, inputNum };
-            var intcode = new List<int>(BaseIntcode);
-            var output = new List<int> { };
-
-            Intcode.IntcodeMachine(intcode, input, output);
-            return output.Single();
+            return new Computer(BaseIntcode)
+                .AddInputs(new List<int> { phase, inputNum })
+                .Run()
+                .Outputs
+                .Last();
         }
+
+        private class ThrusterChain
+        {
+            internal List<Computer> Thrusters = new List<Computer>();
+            internal ThrusterChain(List<int> intcode, IEnumerable<int> phases)
+            {
+                Thrusters.AddRange(phases.Select(p => new Computer(intcode)
+                    .AddInput(p)
+                    .StopAtOutput()));
+            }
+
+            internal int Run(int input)
+            {
+                return Thrusters.Any(t => t.Finished) ? input :
+                    Run(Thrusters.Aggregate(input, (output, thruster) =>
+                        thruster.AddInput(output).Run().Outputs.Last()));
+            }
+        }
+
         internal override void MainB()
         {
-
+            var answer = GetPerms(Enumerable.Range(5, 5))
+                .Select(perm => new ThrusterChain(BaseIntcode, perm).Run(0))
+                .Max();
+            Log.Information("Answer: {answer}", answer);
         }
+
     }
 }
